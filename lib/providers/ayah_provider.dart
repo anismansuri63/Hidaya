@@ -16,7 +16,7 @@ class AyahProvider with ChangeNotifier {
   String errorTitle = '';
   String errorDesc = '';
   AyahDetail ayah = AyahDetail(surahNameArabic: '', surahNameEnglish: '', arabic: '', transliteration: '', translation: '', surahNumber: '0', ayahNumber: '0', tafsir: '',audio: '', wordsToLearn: {});
-  AyahDetail searchedAyah = AyahDetail(surahNameArabic: '', surahNameEnglish: '', arabic: '', transliteration: '', translation: '', surahNumber: '0', ayahNumber: '0', tafsir: '',audio: '', wordsToLearn: {});
+  AyahDetail? searchedAyah = AyahDetail(surahNameArabic: '', surahNameEnglish: '', arabic: '', transliteration: '', translation: '', surahNumber: '0', ayahNumber: '0', tafsir: '',audio: '', wordsToLearn: {});
   bool isLoading = false;
   String? _currentSurah;
   String? _currentAyah;
@@ -42,13 +42,18 @@ class AyahProvider with ChangeNotifier {
     final jsonMap = jsonDecode(jsonString);
     return QuranDetail.fromJson(jsonMap);
   }
+  Future<SurahReference> surahReference(int surah) async {
+    QuranDetail detail = await loadQuranDetail();
+    return detail.data.surahs.references[surah - 1];
+  }
   Future<void> fetchRandomAyah() async {
     isLoading = true;
     notifyListeners();
     var ayahNumber = Random().nextInt(6236) + 1;
     final surahInfo = getSurahAndAyah(ayahNumber);
-    QuranDetail detail = await loadQuranDetail();
-    var current = detail.data.surahs.references[int.parse(surahInfo?['surah'] as String)];
+
+    var current = await surahReference(int.parse(surahInfo?['surah'] as String));
+
     _currentSurah = surahInfo?['surah'];
     _currentAyah = surahInfo?['ayah'];
 
@@ -69,7 +74,7 @@ class AyahProvider with ChangeNotifier {
       );
       String verse = '$_currentSurah:$_currentAyah';
       ayah.arabic = tafsirData!.arabic(verse);
-      ayah.transliteration = tafsirData!.transliteration(verse);
+      ayah.transliteration = tafsirData.transliteration(verse);
       ayah.translation = tafsirData.translation(verse);
       ayah.tafsir = tafsirData.text ?? '';
       ayah.wordsToLearn = tafsirData.getWordsDic(verse);
@@ -168,15 +173,18 @@ class AyahProvider with ChangeNotifier {
     // Check if the network has actual internet access
     return await InternetConnectionChecker().hasConnection;
   }
+  void resetSearchedAyah() {
+    searchedAyah = null; // assuming Ayah is your model with empty constructor
+    notifyListeners();
+  }
+
   Future<void> fetchSpecificAyah(String surah, String ayahNum) async {
     isLoading = true;
     notifyListeners();
     errorTitle = '';
     errorDesc = '';
     try {
-      QuranDetail detail = await loadQuranDetail();
-      var current = detail.data.surahs.references[int.parse(surah)];
-
+      var current = await surahReference(int.parse(surah));
       final ayahNumber = getGlobalAyahNumber(int.parse(surah), int.parse(ayahNum));
 
       final audio = 'https://cdn.islamic.network/quran/audio/128/ar.alafasy/$ayahNumber.mp3';
@@ -200,7 +208,10 @@ class AyahProvider with ChangeNotifier {
           audio: audio,
           wordsToLearn: tafsirData.getWordsDic(verse),
         );
-        saveToArchive(searchedAyah);
+        if (searchedAyah != null) {
+          saveToArchive(searchedAyah!);
+        }
+
       } catch (e) {
         debugPrint('Tafsir fetch failed: $e');
       }

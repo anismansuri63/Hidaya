@@ -37,6 +37,10 @@ class _SearchAyahScreenState extends State<SearchAyahScreen> {
   void initState() {
     super.initState();
     _surahController.addListener(_handleSurahChange);
+    // Clear previous ayah result when screen opens
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      Provider.of<AyahProvider>(context, listen: false).resetSearchedAyah();
+    });
   }
 
   @override
@@ -103,7 +107,7 @@ class _SearchAyahScreenState extends State<SearchAyahScreen> {
                       SurahRangeFormatter(),
                     ],
                     decoration: InputDecoration(
-                      labelText: 'Surah (1–114)',
+                      labelText: 'Surah(1–114)',
                       border: OutlineInputBorder(),
                     ),
                   ),
@@ -175,11 +179,11 @@ class _SearchAyahScreenState extends State<SearchAyahScreen> {
           ),
           if (provider.isLoading)
             CircularProgressIndicator()
-          else if (ayah.arabic.isNotEmpty)
+          else if (ayah != null)
             Expanded(
               child: ListView(
                 children: [
-                  AyahWidget(ayah: ayah, font: provider.selectedFont, widgetValue: previousNext()),
+                  AyahWidget(ayah: ayah, font: provider.selectedFont, widgetValue: previousNext(context)),
                 ],
               ),
             ),
@@ -187,7 +191,18 @@ class _SearchAyahScreenState extends State<SearchAyahScreen> {
       ),
     );
   }
-  Widget previousNext() {
+  Widget previousNext(BuildContext context) {
+    final provider = Provider.of<AyahProvider>(context, listen: false);
+    final ayah = provider.searchedAyah;
+    if (ayah == null) {
+      return SizedBox(height: 1);
+    }
+    final currentSurah = int.tryParse(ayah.surahNumber) ?? 0;
+    final currentAyah = int.tryParse(ayah.ayahNumber) ?? 0;
+
+    // Bounds check
+    final isFirstAyah = currentSurah == 1 && currentAyah == 1;
+    final isLastAyah = currentSurah == 114 && currentAyah == ayahsPerSurah[113];
 
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 1, horizontal: 16.0),
@@ -196,28 +211,70 @@ class _SearchAyahScreenState extends State<SearchAyahScreen> {
         children: [
           ElevatedButton(
             style: ElevatedButton.styleFrom(
-              backgroundColor: Color(0xFFD4A017),
+              backgroundColor: isFirstAyah ? Colors.grey : const Color(0xFFD4A017),
             ),
-            onPressed: () {},
-            child: Text(
+            onPressed: isFirstAyah
+                ? null
+                : () async {
+              int newSurah = currentSurah;
+              int newAyah = currentAyah;
+
+              if (currentAyah > 1) {
+                newAyah -= 1;
+              } else if (currentSurah > 1) {
+                newSurah -= 1;
+                newAyah = ayahsPerSurah[newSurah - 1]; // previous surah's last ayah
+              }
+              _surahController.text = newSurah.toString();
+              _ayahController.text = newAyah.toString();
+              print('anis');
+              print(newSurah.toString());
+              print(newAyah.toString());
+              await provider.fetchSpecificAyah(
+                newSurah.toString(),
+                newAyah.toString(),
+              );
+            },
+            child: const Text(
               "Previous",
               style: TextStyle(color: Colors.white),
             ),
           ),
           ElevatedButton(
             style: ElevatedButton.styleFrom(
-              backgroundColor: Color(0xFFD4A017),
+              backgroundColor: isLastAyah ? Colors.grey : const Color(0xFFD4A017),
             ),
-            onPressed: () {},
-            child: Text(
+            onPressed: isLastAyah
+                ? null
+                : () async {
+              int newSurah = currentSurah;
+              int newAyah = currentAyah;
+              final maxAyah = ayahsPerSurah[currentSurah - 1];
+
+              if (currentAyah < maxAyah) {
+                newAyah += 1;
+              } else if (currentSurah < 114) {
+                newSurah += 1;
+                newAyah = 1;
+              }
+              _surahController.text = newSurah.toString();
+              _ayahController.text = newAyah.toString();
+              await provider.fetchSpecificAyah(
+                newSurah.toString(),
+                newAyah.toString(),
+              );
+            },
+            child: const Text(
               "Next",
               style: TextStyle(color: Colors.white),
             ),
-          )
+          ),
         ],
       ),
     );
   }
+
+
 }
 
 // Formatter to allow only 1–114 for Surah

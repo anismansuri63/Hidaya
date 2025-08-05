@@ -1,4 +1,5 @@
 import 'package:com_quranicayah/models/ayah.dart';
+import 'package:com_quranicayah/widget/tappable_ayah.dart';
 import 'package:flutter/material.dart';
 import '../screens/ayah_screen.dart';
 import '../widget/word_by_word_grid.dart';
@@ -17,7 +18,8 @@ class AyahWidget extends StatelessWidget {
         HeaderSection(ayah: ayah),
         if (widgetValue != null)
             widgetValue!,
-        AyahSection(ayah: ayah, font: font),
+            SizedBox(height: 10,),
+        TappableAyahWord(wordWidget: AyahSection(ayah: ayah, font: font), onTapConfirmed: onTapConfirmed),
         WordByWordScrollGrid(
           wordPairs: ayah.wordsToLearn,
           font: font,
@@ -25,5 +27,9 @@ class AyahWidget extends StatelessWidget {
         TafsirPreviewSection(detail: ayah),
       ],
     );
+
+  }
+  void onTapConfirmed() {
+    print("object");
   }
 }

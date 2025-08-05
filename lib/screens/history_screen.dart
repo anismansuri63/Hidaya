@@ -6,6 +6,7 @@ import 'package:provider/provider.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../providers/settings_provider.dart';
+import '../widget/tappable_ayah.dart';
 import 'ayah_detail_screen.dart';
 import '../models/ayah.dart';
 
@@ -36,16 +37,16 @@ class _HistoryScreenState extends State<HistoryScreen> {
     super.dispose();
   }
   void playAudio(String url, int index, double speed) async {
-    audioPlayer?.stop();
+    audioPlayer?.dispose(); // Properly dispose old player
     final player = AudioPlayer();
     await player.setUrl(url);
     player.setSpeed(speed);
-    await player.play();
 
     setState(() {
       audioPlayer = player;
       currentlyPlayingIndex = index;
     });
+    await player.play();
 
     player.playerStateStream.listen((state) {
       if (state.processingState == ProcessingState.completed) {
@@ -56,6 +57,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
       }
     });
   }
+
 
   Future<void> _loadHistory() async {
     final prefs = await SharedPreferences.getInstance();
@@ -200,9 +202,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
                 ],
               ),
               const SizedBox(height: 16),
-
-              // Arabic text
-              Text(
+              TappableAyahWord(wordWidget: Text(
                 ayah.arabic,
                 textAlign: TextAlign.right,
                 style: TextStyle(
@@ -210,7 +210,8 @@ class _HistoryScreenState extends State<HistoryScreen> {
                   fontSize: 24,
                   height: 1.8,
                 ),
-              ),
+              ), onTapConfirmed: () {}),
+
               const SizedBox(height: 16),
 
               // Translation

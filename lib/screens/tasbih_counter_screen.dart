@@ -3,157 +3,6 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter/material.dart';
 
-// class AnimatedBeadRow extends StatelessWidget {
-//   final int count;
-//   final int total;
-//   final double beadSize;
-//   final Color beadColor;
-//
-//   const AnimatedBeadRow({
-//     super.key,
-//     required this.count,
-//     this.total = 33,
-//     this.beadSize = 28,
-//     required this.beadColor,
-//   });
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     final visibleBeads = 9; // visible beads at once
-//     final offset = (count % total) * (beadSize + 12);
-//
-//     return SizedBox(
-//       height: beadSize + 16,
-//       child: Stack(
-//         children: [
-//           Positioned.fill(
-//             child: Align(
-//               alignment: Alignment.centerLeft,
-//               child: AnimatedContainer(
-//                 duration: const Duration(milliseconds: 300),
-//                 transform: Matrix4.translationValues(-offset.toDouble(), 0, 0),
-//                 child: Row(
-//                   children: List.generate(total, (index) {
-//                     return Container(
-//                       width: beadSize,
-//                       height: beadSize,
-//                       margin: const EdgeInsets.symmetric(horizontal: 6),
-//                       decoration: BoxDecoration(
-//                         color: beadColor,
-//                         shape: BoxShape.circle,
-//                         boxShadow: const [
-//                           BoxShadow(color: Colors.black26, blurRadius: 4)
-//                         ],
-//                         gradient: const LinearGradient(
-//                           colors: [Colors.white38, Colors.transparent],
-//                           begin: Alignment.topLeft,
-//                           end: Alignment.bottomRight,
-//                         ),
-//                       ),
-//                     );
-//                   }),
-//                 ),
-//               ),
-//             ),
-//           ),
-//         ],
-//       ),
-//     );
-//   }
-// }
-// class RealTasbihUI extends StatefulWidget {
-//   const RealTasbihUI({super.key});
-//
-//   @override
-//   State<RealTasbihUI> createState() => _RealTasbihUIState();
-// }
-//
-// class _RealTasbihUIState extends State<RealTasbihUI> {
-//   int count = 0;
-//   int target = 80;
-//   int loop = 1;
-//
-//   void _increment() {
-//     setState(() {
-//       count++;
-//       if (count >= target) {
-//         count = 0;
-//         loop++;
-//       }
-//     });
-//   }
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     const beadColor = Color(0xFFFFD700); // yellow glass-like
-//
-//     return Scaffold(
-//       backgroundColor: Colors.white,
-//       appBar: AppBar(
-//         title: const Text("Tasbih", style: TextStyle(color: Colors.black)),
-//         centerTitle: true,
-//         backgroundColor: Colors.white,
-//         elevation: 0,
-//         actions: const [
-//           Icon(Icons.refresh, color: Colors.green),
-//           SizedBox(width: 10),
-//           Icon(Icons.notifications_off, color: Colors.green),
-//           SizedBox(width: 16),
-//         ],
-//         leading: const Icon(Icons.arrow_back, color: Colors.green),
-//       ),
-//       body: Padding(
-//         padding: const EdgeInsets.all(20),
-//         child: Column(
-//           children: [
-//             Text("Loop $loop", style: const TextStyle(fontSize: 16, color: Colors.black87)),
-//             GestureDetector(
-//               onTap: _increment,
-//               child: Text(
-//                 count.toString().padLeft(2, '0'),
-//                 style: const TextStyle(fontSize: 80, color: Colors.green, fontWeight: FontWeight.bold),
-//               ),
-//             ),
-//             Text("/ $target", style: const TextStyle(fontSize: 18, color: Colors.grey)),
-//
-//             const SizedBox(height: 30),
-//
-//             // Beads Moving Horizontally
-//             AnimatedBeadRow(count: count, total: target, beadColor: beadColor),
-//
-//             const SizedBox(height: 30),
-//
-//             // Dhikr Area
-//             Container(
-//               padding: const EdgeInsets.all(16),
-//               decoration: BoxDecoration(
-//                 color: Colors.green.shade50,
-//                 borderRadius: BorderRadius.circular(12),
-//               ),
-//               child: Column(
-//                 children: const [
-//                   Text(
-//                     'حَيُّ يَا قَيُّومُ بِرَحْمَتِكَ أَسْتَغِيثُ...',
-//                     style: TextStyle(fontSize: 22, fontFamily: 'Scheherazade', color: Colors.black87),
-//                     textAlign: TextAlign.center,
-//                   ),
-//                   SizedBox(height: 8),
-//                   Text(
-//                     'Ya hayyu ya qayyum bi rahmatika astaghiitsu...',
-//                     style: TextStyle(fontSize: 16, color: Colors.green),
-//                     textAlign: TextAlign.center,
-//                   ),
-//                 ],
-//               ),
-//             ),
-//           ],
-//         ),
-//       ),
-//     );
-//   }
-// }
-
-
 class TasbihScreen extends StatefulWidget {
   const TasbihScreen({super.key});
 
@@ -254,35 +103,18 @@ class _TasbihScreenState extends State<TasbihScreen> with SingleTickerProviderSt
     final double beadGroupPosition = (visibleBeads - 1) * 60 - (_counter % totalBeads) * 60.0;
 
     return Scaffold(
+      appBar: AppBar(
+        title: const Text('Tasbih'),
+        actions: [
+
+        ],
+      ),
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.all(24.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: <Widget>[
-              // Top Bar with Tasbih and Icons
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Icon(Icons.arrow_back_ios, color: _darkGreen),
-                  Text(
-                    'Tasbih',
-                    style: TextStyle(
-                      color: Colors.black,
-                      fontSize: 24,
-                      fontWeight: FontWeight.bold,
-                      fontFamily: 'serif',
-                    ),
-                  ),
-                  Row(
-                    children: [
-                      Icon(Icons.refresh, color: _darkGreen),
-                      SizedBox(width: 16),
-                      Icon(Icons.notifications_none, color: _darkGreen),
-                    ],
-                  ),
-                ],
-              ),
               const SizedBox(height: 16),
               // Loop Counter
               Text(
