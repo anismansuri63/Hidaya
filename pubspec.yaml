@@ -1,0 +1,76 @@
+name: com_quranicayah
+description: "A new Flutter project."
+publish_to: 'none'
+version: 1.0.0+1
+
+environment:
+  sdk: ^3.6.1
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  cupertino_icons: ^1.0.8
+  provider: ^6.1.1
+  shared_preferences: ^2.2.2
+  just_audio: ^0.9.36
+  audio_session: ^0.1.16
+  http: ^1.2.1
+  flutter_html: ^3.0.0
+  connectivity_plus: ^6.0.3
+  internet_connection_checker: ^1.0.0+1
+  share_plus: ^7.0.1
+  sqflite: ^2.3.2
+  path: ^1.9.0
+  path_provider: ^2.1.2
+
+
+dev_dependencies:
+  flutter_native_splash: ^2.3.10
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^5.0.0
+  flutter_launcher_icons: ^0.13.1
+flutter_native_splash:
+  color: "#ffffff"
+  image: assets/images/splash_logo.png
+  fullscreen: true
+  android_12:
+    image: assets/images/splash_logo.png
+    icon_background_color: "#ffffff"
+    fullscreen: true
+
+
+flutter_launcher_icons:
+  android: true
+  ios: true
+  image_path: "assets/icon/app_icon.png"
+  image_path_android: "assets/icon/app_icon.png"
+  image_path_ios: "assets/icon/app_icon.png"
+
+flutter:
+  uses-material-design: true
+  assets:
+    - assets/quran.json
+    - assets/database/quran.db
+
+  fonts:
+    - family: Kitab
+      fonts:
+        - asset: assets/fonts/Kitab-Regular.ttf
+
+    - family: me_quran
+      fonts:
+        - asset: assets/fonts/MeQuran.ttf
+
+    - family: AlMajeedQuran
+      fonts:
+        - asset: assets/fonts/Al-Majeed-Quranic.ttf
+
+    - family: AlQuranIndoPak
+      fonts:
+        - asset: assets/fonts/AlQuranIndoPak.ttf
+
+    - family: PDMS_Saleem
+      fonts:
+        - asset: assets/fonts/pdms-saleem-quranfont.ttf
