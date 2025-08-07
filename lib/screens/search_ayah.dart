@@ -1,11 +1,9 @@
-import 'package:com_quranicayah/widget/audio_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import '../providers/ayah_provider.dart';
-import '../providers/font_provider.dart';
 import '../widget/ayah_widget.dart';
-
+import '../theme/app_colors.dart';
 class SearchAyahScreen extends StatefulWidget {
   @override
   _SearchAyahScreenState createState() => _SearchAyahScreenState();
@@ -84,110 +82,138 @@ class _SearchAyahScreenState extends State<SearchAyahScreen> {
   Widget build(BuildContext context) {
     final provider = Provider.of<AyahProvider>(context);
     final ayah = provider.searchedAyah;
+    final theme = AppColors.of(context);
 
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Color(0xFF0A5E2A),
-        title: Text("Search Ayah"),
-      ),
-      body: Column(
-        children: [
-          Padding(
-            padding: EdgeInsets.all(16),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                SizedBox(
-                  width: 120,
-                  child: TextField(
-                    controller: _surahController,
-                    keyboardType: TextInputType.number,
-                    inputFormatters: [
-                      FilteringTextInputFormatter.digitsOnly,
-                      SurahRangeFormatter(),
-                    ],
-                    decoration: InputDecoration(
-                      labelText: 'Surah(1–114)',
-                      border: OutlineInputBorder(),
-                    ),
-                  ),
-                ),
-                SizedBox(
-                  width: 120,
-                  child: TextField(
-                    enabled: _isAyahFieldEnabled,
-                    controller: _ayahController,
-                    keyboardType: TextInputType.number,
-                    inputFormatters: [
-                      FilteringTextInputFormatter.digitsOnly,
-                      if (_maxAyah != null)
-                        AyahRangeFormatter(max: _maxAyah!),
-                    ],
-                    decoration: InputDecoration(
-                      labelText: 'Ayah',
-                      border: OutlineInputBorder(),
-                    ),
-                  ),
-                ),
-                ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Color(0xFFD4A017),
-                  ),
-                  onPressed: () async {
-                    FocusScope.of(context).unfocus(); // dismiss keyboard
+    return GestureDetector(
+      onTap: () {
+        FocusScope.of(context).unfocus(); // This hides the keyboard
+      },
 
-                    final surah = _surahController.text.trim();
-                    final ayahNum = _ayahController.text.trim();
-
-                    if (surah.isNotEmpty &&
-                        ayahNum.isNotEmpty &&
-                        int.tryParse(surah) != null &&
-                        int.tryParse(ayahNum) != null &&
-                        int.parse(surah) >= 1 &&
-                        int.parse(surah) <= 114 &&
-                        _maxAyah != null &&
-                        int.parse(ayahNum) >= 1 &&
-                        int.parse(ayahNum) <= _maxAyah!) {
-                      await provider.fetchSpecificAyah(surah, ayahNum);
-
-                      if (provider.errorTitle.isNotEmpty ||
-                          provider.errorDesc.isNotEmpty) {
-                        showDialog(
-                          context: context,
-                          builder: (context) => AlertDialog(
-                            title: Text(provider.errorTitle),
-                            content: Text(provider.errorDesc),
-                            actions: [
-                              TextButton(
-                                onPressed: () =>
-                                    Navigator.of(context).pop(),
-                                child: Text("OK"),
-                              )
-                            ],
-                          ),
-                        );
-                      }
-                    }
-                  },
-                  child: Text(
-                    "Fetch",
-                    style: TextStyle(color: Colors.white),
-                  ),
-                ),
-              ],
-            ),
+      child: Scaffold(
+        appBar: AppBar(
+          backgroundColor: theme.primary,
+          iconTheme: IconThemeData(
+            color: theme.textWhite, // ← Set your desired color here
           ),
-          if (provider.isLoading)
-            CircularProgressIndicator()
-          else if (ayah != null)
-            Expanded(
-              child: ListView(
+          title: Text("Search Ayah",
+          style: TextStyle(color: theme.textWhite),),
+        ),
+        body: Column(
+          children: [
+            Padding(
+              padding: EdgeInsets.symmetric(vertical: 16),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  AyahWidget(ayah: ayah, font: provider.selectedFont, widgetValue: previousNext(context)),
+                  SizedBox(
+                    width: 120,
+                    child: TextField(
+                      controller: _surahController,
+                      keyboardType: TextInputType.number,
+                      cursorColor: theme.textBlack,
+                      inputFormatters: [
+                        FilteringTextInputFormatter.digitsOnly,
+                        SurahRangeFormatter(),
+                      ],
+                      decoration: InputDecoration(
+                        labelText: 'Surah(1–114)',
+                        labelStyle: TextStyle(fontSize: 14,
+                        color: theme.textBlack),
+                        enabledBorder: OutlineInputBorder(
+                          borderSide: BorderSide(color: theme.primary), // default border color
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderSide: BorderSide(color: theme.secondary, width: 2), // when focused
+                        ),
+                        border: OutlineInputBorder(),
+                      ),
+                    ),
+                  ),
+                  SizedBox(
+                    width: 120,
+                    child: TextField(
+                      enabled: _isAyahFieldEnabled,
+                      controller: _ayahController,
+                      keyboardType: TextInputType.number,
+                      cursorColor: theme.textBlack,
+                      inputFormatters: [
+                        FilteringTextInputFormatter.digitsOnly,
+                        if (_maxAyah != null)
+                          AyahRangeFormatter(max: _maxAyah!),
+                      ],
+                      decoration: InputDecoration(
+                        labelText: 'Ayah',
+                        labelStyle: TextStyle(fontSize: 14,color: theme.textBlack),
+                        enabledBorder: OutlineInputBorder(
+                          borderSide: BorderSide(color: theme.primary), // default border color
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderSide: BorderSide(color: theme.secondary, width: 2), // when focused
+                        ),
+                        border: OutlineInputBorder(),
+                      ),
+                    ),
+                  ),
+                  ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: theme.secondary,
+                    ),
+                    onPressed: () async {
+                      FocusScope.of(context).unfocus(); // dismiss keyboard
+
+                      final surah = _surahController.text.trim();
+                      final ayahNum = _ayahController.text.trim();
+
+                      if (surah.isNotEmpty &&
+                          ayahNum.isNotEmpty &&
+                          int.tryParse(surah) != null &&
+                          int.tryParse(ayahNum) != null &&
+                          int.parse(surah) >= 1 &&
+                          int.parse(surah) <= 114 &&
+                          _maxAyah != null &&
+                          int.parse(ayahNum) >= 1 &&
+                          int.parse(ayahNum) <= _maxAyah!) {
+                        await provider.fetchSpecificAyah(surah, ayahNum);
+
+                        if (provider.errorTitle.isNotEmpty ||
+                            provider.errorDesc.isNotEmpty) {
+                          showDialog(
+                            context: context,
+                            builder: (context) => AlertDialog(
+                              title: Text(provider.errorTitle),
+                              content: Text(provider.errorDesc),
+                              actions: [
+                                TextButton(
+                                  onPressed: () =>
+                                      Navigator.of(context).pop(),
+                                  child: Text("OK"),
+                                )
+                              ],
+                            ),
+                          );
+                        }
+                      }
+                    },
+                    child: Text(
+                      "Fetch",
+                      style: TextStyle(color: theme.textWhite),
+                    ),
+                  ),
                 ],
               ),
             ),
-        ],
+            if (provider.isLoading)
+              CircularProgressIndicator()
+            else if (ayah != null)
+              Expanded(
+                child: ListView(
+                  children: [
+                    AyahWidget(ayah: ayah, font: provider.selectedFont, widgetValue: previousNext(context)),
+                  ],
+                ),
+              ),
+          ],
+        ),
       ),
     );
   }
@@ -203,7 +229,7 @@ class _SearchAyahScreenState extends State<SearchAyahScreen> {
     // Bounds check
     final isFirstAyah = currentSurah == 1 && currentAyah == 1;
     final isLastAyah = currentSurah == 114 && currentAyah == ayahsPerSurah[113];
-
+    final theme = AppColors.of(context);
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 1, horizontal: 16.0),
       child: Row(
@@ -211,7 +237,7 @@ class _SearchAyahScreenState extends State<SearchAyahScreen> {
         children: [
           ElevatedButton(
             style: ElevatedButton.styleFrom(
-              backgroundColor: isFirstAyah ? Colors.grey : const Color(0xFFD4A017),
+              backgroundColor: isFirstAyah ? Colors.grey :  theme.secondary,
             ),
             onPressed: isFirstAyah
                 ? null
@@ -227,22 +253,19 @@ class _SearchAyahScreenState extends State<SearchAyahScreen> {
               }
               _surahController.text = newSurah.toString();
               _ayahController.text = newAyah.toString();
-              print('anis');
-              print(newSurah.toString());
-              print(newAyah.toString());
               await provider.fetchSpecificAyah(
                 newSurah.toString(),
                 newAyah.toString(),
               );
             },
-            child: const Text(
+            child: Text(
               "Previous",
-              style: TextStyle(color: Colors.white),
+              style: TextStyle(color: theme.textWhite),
             ),
           ),
           ElevatedButton(
             style: ElevatedButton.styleFrom(
-              backgroundColor: isLastAyah ? Colors.grey : const Color(0xFFD4A017),
+              backgroundColor: isLastAyah ? Colors.grey :  theme.secondary,
             ),
             onPressed: isLastAyah
                 ? null
@@ -264,9 +287,9 @@ class _SearchAyahScreenState extends State<SearchAyahScreen> {
                 newAyah.toString(),
               );
             },
-            child: const Text(
+            child: Text(
               "Next",
-              style: TextStyle(color: Colors.white),
+              style: TextStyle(color: theme.textWhite),
             ),
           ),
         ],

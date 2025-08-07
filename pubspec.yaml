@@ -24,6 +24,7 @@ dependencies:
   path: ^1.9.0
   path_provider: ^2.1.2
   flutter_tts: ^3.8.5
+  flutter_animate: ^4.1.1+1
 
 dev_dependencies:
   flutter_native_splash: ^2.3.10
@@ -32,13 +33,18 @@ dev_dependencies:
   flutter_lints: ^5.0.0
   flutter_launcher_icons: ^0.13.1
 flutter_native_splash:
+  background_image: assets/images/splash_logo.png
+  android: true
+  ios: true
   color: "#ffffff"
   image: assets/images/splash_logo.png
   fullscreen: true
+  android_gravity: fill
   android_12:
     image: assets/images/splash_logo.png
     icon_background_color: "#ffffff"
     fullscreen: true
+    android_gravity: fill
 
 
 flutter_launcher_icons:
@@ -52,7 +58,9 @@ flutter:
   uses-material-design: true
   assets:
     - assets/quran.json
-    - assets/database/quran.db
+    - assets/database/qurandb.db
+    - assets/database/quran.sqlite
+    - assets/images/islamic_pattern.png
 
   fonts:
     - family: Kitab

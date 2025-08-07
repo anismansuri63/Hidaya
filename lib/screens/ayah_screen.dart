@@ -1,19 +1,22 @@
+import 'dart:convert';
 import 'package:com_quranicayah/providers/ayah_provider.dart';
 import 'package:com_quranicayah/providers/font_provider.dart';
 import 'package:com_quranicayah/screens/search_ayah.dart';
+import 'package:com_quranicayah/screens/surah_list_screen.dart';
 import 'package:com_quranicayah/screens/tasbih_counter_screen.dart';
 import 'package:com_quranicayah/widget/audio_button.dart';
 import 'package:com_quranicayah/widget/ayah_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:share_plus/share_plus.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../models/ayah.dart';
 import '../widget/generate_button.dart';
-import '../widget/word_by_word_grid.dart';
 import 'app_drawer.dart';
-import 'history_screen.dart';
+import 'ayah_list_screen.dart';
 import 'setting_screen.dart';
 import 'full_tafsir_screen.dart';
+import '../theme/app_colors.dart';
 
 
 class MainScreen extends StatefulWidget {
@@ -53,6 +56,13 @@ class _MainScreenState extends State<MainScreen> {
     switch (index) {
       case 0:
         break;
+
+      case 1:
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => SurahListScreen()),
+        );
+        break;
       case 8:
         Navigator.push(
           context,
@@ -60,11 +70,30 @@ class _MainScreenState extends State<MainScreen> {
         );
         break;
 
+      case 2:
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (_) => const AyahListScreen(
+              title: 'Bookmarks',
+              sharedPrefKey: 'ayahBookmark',
+            ),
+          ),
+        );
+
+        break;
+
       case 3:
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => const HistoryScreen()),
+          MaterialPageRoute(
+            builder: (_) => const AyahListScreen(
+              title: 'History',
+              sharedPrefKey: 'ayahArchive',
+            ),
+          ),
         );
+
         break;
       case 5:
         Navigator.push(
@@ -101,6 +130,7 @@ class _MainScreenState extends State<MainScreen> {
     }
   }
   void showNoInternetDialog(BuildContext context) {
+    final theme = AppColors.of(context);
     showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
@@ -109,7 +139,7 @@ class _MainScreenState extends State<MainScreen> {
         actions: [
           TextButton(
             onPressed: () => Navigator.of(ctx).pop(),
-            child: const Text("OK"),
+            child: Text("OK", style: TextStyle(color: theme.primary),),
           ),
         ],
       ),
@@ -118,7 +148,7 @@ class _MainScreenState extends State<MainScreen> {
 
   @override
   Widget build(BuildContext context) {
-
+    final theme = AppColors.of(context);
     return Scaffold(
       appBar: AppBar(
         title: const Text('Quran Ayah'),
@@ -146,11 +176,11 @@ class _MainScreenState extends State<MainScreen> {
             children: [
               SingleChildScrollView(
                 child: Container(
-                  decoration: const BoxDecoration(
+                  decoration: BoxDecoration(
                     gradient: LinearGradient(
                       begin: Alignment.topLeft,
                       end: Alignment.bottomRight,
-                      colors: [Color(0xFF0A5E2A), Color(0xFF1B7942)],
+                      colors: [theme.primary, theme.primary2],
                     ),
                   ),
                   child: Column(
@@ -166,9 +196,9 @@ class _MainScreenState extends State<MainScreen> {
               if (viewModel.isLoading)
                 Container(
                   color: Colors.black.withOpacity(0.4),
-                  child: const Center(
+                  child:  Center(
                     child: CircularProgressIndicator(
-                      valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                      valueColor: AlwaysStoppedAnimation<Color>(theme.textWhite),
                     ),
                   ),
                 )
@@ -187,17 +217,17 @@ class HeaderSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print(ayah.surahNameEnglish);
+    final theme = AppColors.of(context);
     return Container(
       margin: const EdgeInsets.all(16),
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: const Color(0xFF0A5E2A).withOpacity(0.9),
+        color:  theme.primary.withOpacity(0.9),
         borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: const Color(0xFFD4A017), width: 2),
+        border: Border.all(color: theme.secondary, width: 2),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.3),
+            color: theme.textBlack.withOpacity(0.3),
             blurRadius: 10,
             offset: const Offset(0, 5),
           )
@@ -207,10 +237,10 @@ class HeaderSection extends StatelessWidget {
         children: [
           Text(
             ayah.surahNameArabic,
-            style: const TextStyle(
+            style: TextStyle(
               fontFamily: 'AlQuranIndoPak',
               fontSize: 28,
-              color: Colors.white,
+              color: theme.textWhite,
             ),
           ),
           const SizedBox(height: 10),
@@ -219,17 +249,16 @@ class HeaderSection extends StatelessWidget {
             children: [
               Text(
                 ayah.surahNameEnglish,
-                style: const TextStyle(
-                  fontFamily: 'Playfair',
+                style: TextStyle(
                   fontSize: 20,
-                  color: Color(0xFFD4A017),
+                  color: theme.secondary,
                 ),
               ),
               Text(
                 'Surah ${ayah.surahNumber}:${ayah.ayahNumber}',
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 16,
-                  color: Colors.white,
+                  color: theme.textWhite,
                 ),
               ),
             ],
@@ -240,26 +269,82 @@ class HeaderSection extends StatelessWidget {
   }
 }
 
-class AyahSection extends StatelessWidget {
+class AyahSection extends StatefulWidget {
   final AyahDetail ayah;
   final String font;
+
   const AyahSection({super.key, required this.ayah, required this.font});
 
   @override
+  State<AyahSection> createState() => _AyahSectionState();
+}
+
+class _AyahSectionState extends State<AyahSection> {
+  List<AyahDetail> _bookmarks = [];
+  bool _isBookmarked = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadBookmarks();
+  }
+
+  Future<void> _loadBookmarks() async {
+    final prefs = await SharedPreferences.getInstance();
+    final encodedList = prefs.getStringList('ayahBookmark') ?? [];
+
+    final loadedBookmarks = encodedList.map((jsonStr) {
+      final decoded = json.decode(jsonStr);
+      return AyahDetail.fromMap(decoded);
+    }).toList();
+
+    final isBookmarked = loadedBookmarks.any((ayah) => _isSameAyah(ayah, widget.ayah));
+
+    setState(() {
+      _bookmarks = loadedBookmarks;
+      _isBookmarked = isBookmarked;
+    });
+  }
+
+  Future<void> _toggleBookmark() async {
+    final prefs = await SharedPreferences.getInstance();
+
+    final exists = _bookmarks.any((ayah) => _isSameAyah(ayah, widget.ayah));
+
+    setState(() {
+      if (exists) {
+        _bookmarks.removeWhere((ayah) => _isSameAyah(ayah, widget.ayah));
+        _isBookmarked = false;
+      } else {
+        _bookmarks.add(widget.ayah);
+        _isBookmarked = true;
+      }
+    });
+
+    final updatedEncoded = _bookmarks.map((ayah) => json.encode(ayah.toMap())).toList();
+    await prefs.setStringList('ayahBookmark', updatedEncoded);
+  }
+
+  bool _isSameAyah(AyahDetail a, AyahDetail b) {
+    return a.surahNumber == b.surahNumber && a.ayahNumber == b.ayahNumber;
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final theme = AppColors.of(context);
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 16),
       padding: const EdgeInsets.all(10),
       decoration: BoxDecoration(
-        color: const Color(0xFFF8F5F0),
+        color: theme.accent,
         borderRadius: BorderRadius.circular(20),
         border: Border.all(
-          color: const Color(0xFFD4A017),
+          color: theme.secondary,
           width: 3,
         ),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.2),
+            color: theme.textBlack.withOpacity(0.2),
             blurRadius: 10,
             offset: const Offset(0, 5),
           )
@@ -268,62 +353,79 @@ class AyahSection extends StatelessWidget {
       child: Column(
         children: [
           Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-                IconButton(
-                  icon: Icon(Icons.share, color: Color(0xFF0A5E2A)),
-                  onPressed: () => _shareAyah(ayah),
+              Row(
+                children: [
+                  IconButton(
+                    icon: Icon(Icons.share, color: theme.primary),
+                    onPressed: () => _shareAyah(widget.ayah),
+                  ),
+                  AudioPlayButton(audioUrl: widget.ayah.audio),
+                ],
+              ),
+
+              IconButton(
+                icon: Icon(
+                  _isBookmarked ? Icons.bookmark : Icons.bookmark_outline,
+                  color: theme.primary,
                 ),
-              AudioPlayButton(audioUrl: ayah.audio)
+                onPressed: _toggleBookmark,
+              )
             ],
           ),
           Text(
-            ayah.arabic,
-            textAlign: TextAlign.center,
+            widget.ayah.arabic,
+            textAlign: TextAlign.right,
             style: TextStyle(
-              fontFamily: font,
+              fontFamily: widget.font,
               fontSize: 32,
               height: 1.8,
+              color: theme.textBlack,
             ),
           ),
-          Divider(color: Color(0xFFD4A017), thickness: 2),
+          Divider(color: theme.secondary, thickness: 2),
           const SizedBox(height: 20),
-          const Align(
+          Align(
             alignment: Alignment.centerLeft,
             child: Text(
               'Transliteration',
               style: TextStyle(
                 fontWeight: FontWeight.bold,
                 fontSize: 16,
-                color: Color(0xFFD4A017),
+                color: theme.secondary,
               ),
             ),
           ),
           const SizedBox(height: 8),
           Text(
-            ayah.transliteration,
-            style: const TextStyle(
+            widget.ayah.transliteration,
+            style: TextStyle(
               fontSize: 18,
               fontStyle: FontStyle.italic,
-              color: Color(0xFF5D5A57),
+              color: theme.textBlack,
+              fontWeight: FontWeight.w500
             ),
           ),
           const SizedBox(height: 20),
-          const Align(
+          Align(
             alignment: Alignment.centerLeft,
             child: Text(
               'Translation',
               style: TextStyle(
                 fontWeight: FontWeight.bold,
                 fontSize: 16,
-                color: Color(0xFFD4A017),
+                color: theme.secondary,
               ),
             ),
           ),
           const SizedBox(height: 8),
           Text(
-            ayah.translation,
-            style: const TextStyle(
+            widget.ayah.translation,
+            style: TextStyle(
               fontSize: 18,
+              color: theme.textBlack,
+              fontWeight: FontWeight.w500
             ),
           ),
         ],
@@ -331,7 +433,6 @@ class AyahSection extends StatelessWidget {
     );
   }
 
-// Add method to _MainScreenState
   void _shareAyah(AyahDetail ayah) {
     final text = """
 ${ayah.surahNameEnglish} (${ayah.numberDetail()})
@@ -340,12 +441,12 @@ ${ayah.arabic}
 
 ${ayah.translation}
 
-- Shared via Quran Ayah App
-  """;
-
+- Shared via Hidayat App
+""";
     Share.share(text, subject: 'Quran Ayah Sharing');
   }
 }
+
 
 class TafsirPreviewSection extends StatelessWidget {
   final AyahDetail detail;
@@ -354,28 +455,28 @@ class TafsirPreviewSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = AppColors.of(context);
     return Container(
       margin: const EdgeInsets.all(16),
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: const Color(0xFFE8E3D7),
+        color:  theme.background,
         borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: const Color(0xFFD4A017)),
+        border: Border.all(color:  theme.secondary),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
             children: [
-              const Icon(Icons.book, color: Color(0xFF0A5E2A), size: 28),
+              Icon(Icons.book, color: theme.primary, size: 28),
               const SizedBox(width: 10),
-              const Text(
+              Text(
                 'Tafsir Insight',
                 style: TextStyle(
-                  fontFamily: 'Playfair',
                   fontSize: 22,
                   fontWeight: FontWeight.bold,
-                  color: Color(0xFF0A5E2A),
+                  color: theme.primary,
                 ),
               ),
             ],
@@ -391,8 +492,8 @@ class TafsirPreviewSection extends StatelessWidget {
               );
             },
             style: ElevatedButton.styleFrom(
-              backgroundColor: const Color(0xFF0A5E2A),
-              foregroundColor: Colors.white,
+              backgroundColor:  theme.primary,
+              foregroundColor: theme.textWhite,
               minimumSize: const Size(double.infinity, 50),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(15),

@@ -3,8 +3,8 @@ import 'package:com_quranicayah/providers/font_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../widget/ayah_widget.dart';
-import '../widget/word_by_word_grid.dart';
-import 'ayah_screen.dart';
+
+import '../theme/app_colors.dart';
 
 class AyahDetailView extends StatelessWidget {
   final AyahDetail ayah;
@@ -14,16 +14,16 @@ class AyahDetailView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final font = Provider.of<FontProvider>(context);
-
+    final theme = AppColors.of(context);
     return Scaffold(
       appBar: AppBar(title: const Text("Ayah Detail")),
       body: SingleChildScrollView(
         child: Container(
-          decoration: const BoxDecoration(
+          decoration: BoxDecoration(
             gradient: LinearGradient(
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
-              colors: [Color(0xFF0A5E2A), Color(0xFF1B7942)],
+              colors: [theme.primary, theme.primary2],
             ),
           ),
           child: AyahWidget(ayah: ayah, font: font.fontFamily),

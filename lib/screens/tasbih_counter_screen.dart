@@ -1,7 +1,5 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
-import 'package:flutter/material.dart';
+import '../theme/app_colors.dart';
 
 class TasbihScreen extends StatefulWidget {
   const TasbihScreen({super.key});
@@ -36,6 +34,7 @@ class _TasbihScreenState extends State<TasbihScreen> with SingleTickerProviderSt
 
   void _showDuaDialog() {
     _duaController.text = _duaText;
+    final theme = AppColors.of(context);
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -47,13 +46,13 @@ class _TasbihScreenState extends State<TasbihScreen> with SingleTickerProviderSt
           ),
           content: TextField(
             controller: _duaController,
-            style: const TextStyle(color: Colors.white),
+            style: TextStyle(color: theme.textWhite),
             decoration: InputDecoration(
               hintText: "Enter your dua here...",
-              hintStyle: const TextStyle(color: Colors.white54),
+              hintStyle: TextStyle(color: theme.textWhite),
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(10),
-                borderSide: const BorderSide(color: Colors.white),
+                borderSide: BorderSide(color: theme.textWhite),
               ),
               focusedBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(10),
@@ -65,7 +64,7 @@ class _TasbihScreenState extends State<TasbihScreen> with SingleTickerProviderSt
           ),
           actions: <Widget>[
             TextButton(
-              child: const Text('Cancel', style: TextStyle(color: Colors.white)),
+              child: Text('Cancel', style: TextStyle(color: theme.textWhite)),
               onPressed: () {
                 Navigator.of(context).pop();
               },
@@ -77,7 +76,7 @@ class _TasbihScreenState extends State<TasbihScreen> with SingleTickerProviderSt
                   borderRadius: BorderRadius.circular(8),
                 ),
               ),
-              child: const Text('Save', style: TextStyle(color: Colors.white)),
+              child: Text('Save', style: TextStyle(color: theme.textWhite)),
               onPressed: () {
                 setState(() {
                   _duaText = _duaController.text.isNotEmpty
@@ -101,13 +100,16 @@ class _TasbihScreenState extends State<TasbihScreen> with SingleTickerProviderSt
     const int visibleBeads = 7;
     // Calculate the animated position for the group of beads
     final double beadGroupPosition = (visibleBeads - 1) * 60 - (_counter % totalBeads) * 60.0;
+    final theme = AppColors.of(context);
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Tasbih'),
-        actions: [
-
-        ],
+        backgroundColor: theme.primary,
+        iconTheme: IconThemeData(
+          color: theme.textWhite, // ← Set your desired color here
+        ),
+        title: Text("Tasbih",
+          style: TextStyle(color: theme.textWhite),),
       ),
       body: SafeArea(
         child: Padding(
@@ -119,8 +121,8 @@ class _TasbihScreenState extends State<TasbihScreen> with SingleTickerProviderSt
               // Loop Counter
               Text(
                 'Loop ${_counter ~/ totalBeads + 1}',
-                style: const TextStyle(
-                  color: Colors.white70,
+                style:  TextStyle(
+                  color: theme.textWhite,
                   fontSize: 18,
                   fontFamily: 'serif',
                 ),
@@ -142,9 +144,9 @@ class _TasbihScreenState extends State<TasbihScreen> with SingleTickerProviderSt
                   ),
                   Text(
                     '/ $totalBeads',
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontSize: 24,
-                      color: Colors.white70,
+                      color: theme.textWhite,
                       fontFamily: 'sans-serif',
                     ),
                   ),
@@ -222,8 +224,8 @@ class _TasbihScreenState extends State<TasbihScreen> with SingleTickerProviderSt
                     const SizedBox(height: 10),
                     Text(
                       _duaText,
-                      style: const TextStyle(
-                        color: Colors.white,
+                      style: TextStyle(
+                        color: theme.textWhite,
                         fontSize: 18,
                         fontStyle: FontStyle.italic,
                         fontFamily: 'serif',
@@ -239,9 +241,9 @@ class _TasbihScreenState extends State<TasbihScreen> with SingleTickerProviderSt
                           color: _darkGreen,
                           borderRadius: BorderRadius.circular(15),
                         ),
-                        child: const Text(
+                        child: Text(
                           'Edit Dua',
-                          style: TextStyle(color: Colors.white70, fontSize: 16),
+                          style: TextStyle(color: theme.textWhite, fontSize: 16),
                         ),
                       ),
                     ),
@@ -258,6 +260,7 @@ class _TasbihScreenState extends State<TasbihScreen> with SingleTickerProviderSt
                     label: 'Count',
                     onPressed: _incrementCounter,
                     color: _primaryGold,
+                    color2: theme.textWhite
                   ),
                 ],
               ),
@@ -306,11 +309,12 @@ class _TasbihScreenState extends State<TasbihScreen> with SingleTickerProviderSt
     required String label,
     required VoidCallback onPressed,
     required Color color,
+    required Color color2
   }) {
     return ElevatedButton(
       onPressed: onPressed,
       style: ElevatedButton.styleFrom(
-        foregroundColor: Colors.white,
+        foregroundColor: color2,
         backgroundColor: color,
         elevation: 8,
         shape: RoundedRectangleBorder(

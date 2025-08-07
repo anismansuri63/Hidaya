@@ -1,15 +1,16 @@
 import 'package:flutter/material.dart';
 
 import '../service/wudu_manager.dart';
+import '../theme/app_colors.dart';
 
 
 class TappableAyahWord extends StatefulWidget {
-  final Widget wordWidget;
-  final VoidCallback onTapConfirmed;
+  final Widget child;
+  final VoidCallback? onTapConfirmed;
 
   const TappableAyahWord({
     Key? key,
-    required this.wordWidget,
+    required this.child,
     required this.onTapConfirmed,
   }) : super(key: key);
 
@@ -22,6 +23,7 @@ class _TappableAyahWordState extends State<TappableAyahWord> {
 
   Future<void> _handleTap() async {
     if (!_wuduManager.hasConfirmedWudu) {
+      final theme = AppColors.of(context);
       final result = await showDialog<bool>(
         context: context,
         builder: (context) => AlertDialog(
@@ -31,11 +33,11 @@ class _TappableAyahWordState extends State<TappableAyahWord> {
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(context, false),
-              child: const Text("No"),
+              child: Text("No", style: TextStyle(color: theme.primary),),
             ),
             TextButton(
               onPressed: () => Navigator.pop(context, true),
-              child: const Text("Yes"),
+              child: Text("Yes", style: TextStyle(color: theme.primary),),
             ),
           ],
         ),
@@ -48,15 +50,16 @@ class _TappableAyahWordState extends State<TappableAyahWord> {
       }
     }
 
-    // ✅ Proceed with tap action
-    widget.onTapConfirmed();
+    if (widget.onTapConfirmed != null) {
+      widget.onTapConfirmed!();
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: _handleTap,
-      child: widget.wordWidget,
+      child: widget.child,
     );
   }
 }

@@ -1,19 +1,20 @@
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-
+import '../theme/app_colors.dart';
 class QuranSplashScreen extends StatelessWidget {
   const QuranSplashScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final theme = AppColors.of(context);
     return Scaffold(
       body: Container(
-        decoration: const BoxDecoration(
+        decoration: BoxDecoration(
           gradient: LinearGradient(
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
-            colors: [Color(0xFF0A5E2A), Color(0xFF1B7942)],
+            colors: [theme.primary, theme.primary2],
           ),
         ),
         child: Stack(
@@ -35,29 +36,29 @@ class QuranSplashScreen extends StatelessWidget {
                   Container(
                     padding: const EdgeInsets.all(25),
                     decoration: BoxDecoration(
-                      color: const Color(0xFF0A5E2A).withOpacity(0.8),
+                      color:  theme.primary.withOpacity(0.8),
                       shape: BoxShape.circle,
                       border: Border.all(
-                        color: const Color(0xFFD4A017),
+                        color:  theme.secondary,
                         width: 5,
                       ),
                     ),
-                    child: const Icon(
+                    child: Icon(
                       Icons.menu_book,
                       size: 120,
-                      color: Color(0xFFD4A017),
+                      color: theme.secondary,
                     ),
                   ),
 
                   const SizedBox(height: 40),
 
                   // Arabic text
-                  const Text(
+                  Text(
                     "بِسْمِ ٱللَّهِ ٱلرَّحْمَـٰنِ ٱلرَّحِيمِ",
                     style: TextStyle(
                       fontFamily: 'Kitab',
                       fontSize: 36,
-                      color: Color(0xFFD4A017),
+                      color: theme.secondary,
                       height: 1.8,
                     ),
                   ),
@@ -65,20 +66,20 @@ class QuranSplashScreen extends StatelessWidget {
                   const SizedBox(height: 20),
 
                   // English text
-                  const Text(
+                  Text(
                     "In the name of Allah, the Most Gracious, the Most Merciful",
                     textAlign: TextAlign.center,
                     style: TextStyle(
                       fontSize: 20,
-                      color: Colors.white,
+                      color: theme.textWhite,
                     ),
                   ),
 
                   const SizedBox(height: 50),
 
                   // Loading indicator
-                  const CircularProgressIndicator(
-                    valueColor: AlwaysStoppedAnimation<Color>(Color(0xFFD4A017)),
+                  CircularProgressIndicator(
+                    valueColor: AlwaysStoppedAnimation<Color>(theme.secondary),
                     strokeWidth: 6,
                   ),
                 ],
@@ -95,7 +96,7 @@ class _IslamicPatternPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     final paint = Paint()
-      ..color = const Color(0xFFD4A017)
+      ..color =  Colors.red
       ..style = PaintingStyle.stroke
       ..strokeWidth = 1.0;
 

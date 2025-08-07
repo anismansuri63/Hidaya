@@ -1,12 +1,12 @@
 import 'package:com_quranicayah/providers/font_provider.dart';
 import 'package:com_quranicayah/providers/settings_provider.dart';
+import 'package:com_quranicayah/providers/theme_provider.dart';
 import 'package:com_quranicayah/screens/splash_screen.dart';
-
+import 'package:com_quranicayah/service/navigation_service.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'providers/ayah_provider.dart';
 import 'screens/ayah_screen.dart';
-import 'package:flutter/services.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized(); // Important before using async in main
@@ -14,11 +14,11 @@ void main() async {
   final fontProvider = FontProvider();
   await fontProvider.loadFont();
 
-  SystemChrome.setSystemUIOverlayStyle(
-    const SystemUiOverlayStyle(
-      statusBarColor: Color(0xFF0A5E2A),
-    ),
-  );
+  // SystemChrome.setSystemUIOverlayStyle(
+  //   const SystemUiOverlayStyle(
+  //     statusBarColor: AppColors.primary,
+  //   ),
+  // );
 
   runApp(MyApp(fontProvider: fontProvider));
 }
@@ -35,8 +35,11 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider.value(value: fontProvider), // Use the loaded instance
         ChangeNotifierProvider(create: (_) => AyahProvider()),
         ChangeNotifierProvider(create: (_) => SettingsProvider()),
+        ChangeNotifierProvider(create: (_) => ThemeProvider()), // Add this
+
       ],
       child: MaterialApp(
+        navigatorKey: NavigationService.navigatorKey,
         title: 'Quranic Ayah',
         theme: ThemeData(
           primarySwatch: Colors.teal,

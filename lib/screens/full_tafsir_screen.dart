@@ -2,7 +2,7 @@ import 'package:com_quranicayah/models/ayah.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
+import '../theme/app_colors.dart';
 class FullTafsirView extends StatefulWidget {
   final AyahDetail detail;
   const FullTafsirView({
@@ -44,10 +44,12 @@ class _FullTafsirViewState extends State<FullTafsirView> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = AppColors.of(context);
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.detail.surahNameArabic),
-        backgroundColor: Color(0xFF0A5E2A),
+        iconTheme: IconThemeData(color: theme.textWhite),
+        title: Text(widget.detail.surahNameArabic, style: TextStyle(color: theme.textWhite),),
+        backgroundColor: theme.primary,
       ),
       body: Column(
         children: [
@@ -59,7 +61,7 @@ class _FullTafsirViewState extends State<FullTafsirView> {
                 const Text("Font Size: "),
                 Expanded(
                   child: Slider(
-                    activeColor: Color(0xFF0A5E2A),
+                    activeColor: theme.primary,
                     value: _baseFontSize,
                     min: 14,
                     max: 22,
@@ -74,14 +76,14 @@ class _FullTafsirViewState extends State<FullTafsirView> {
           const Divider(),
           Row(
             children: [
-              const Icon(Icons.book, color: Color(0xFF0A5E2A), size: 32),
+              Icon(Icons.book, color: theme.primary, size: 32),
               const SizedBox(width: 10),
               Text(
                 'Tafsir of Ayah ${widget.detail.numberDetail()}',
                 style: TextStyle(
                   fontSize: 24,
                   fontWeight: FontWeight.bold,
-                  color: const Color(0xFF0A5E2A),
+                  color:  theme.primary,
                 ),
               ),
             ],

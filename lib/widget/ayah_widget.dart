@@ -19,7 +19,7 @@ class AyahWidget extends StatelessWidget {
         if (widgetValue != null)
             widgetValue!,
             SizedBox(height: 10,),
-        TappableAyahWord(wordWidget: AyahSection(ayah: ayah, font: font), onTapConfirmed: onTapConfirmed),
+        TappableAyahWord(onTapConfirmed: onTapConfirmed, child: AyahSection(ayah: ayah, font: font)),
         WordByWordScrollGrid(
           wordPairs: ayah.wordsToLearn,
           font: font,

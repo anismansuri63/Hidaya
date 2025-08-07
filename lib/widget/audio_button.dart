@@ -3,6 +3,8 @@ import 'package:just_audio/just_audio.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:audio_session/audio_session.dart';
 
+import '../theme/app_colors.dart';
+
 class AudioPlayButton extends StatefulWidget {
   final String audioUrl;
   const AudioPlayButton({super.key, required this.audioUrl});
@@ -66,11 +68,11 @@ class _AudioPlayButtonState extends State<AudioPlayButton> {
 
   @override
   Widget build(BuildContext context) {
-
+    final theme = AppColors.of(context);
     return IconButton(
       icon: Icon(isPlaying ? Icons.pause_circle_filled : Icons.play_circle_fill, size: 30),
       onPressed: _togglePlayback,
-      color: Color(0xFF0A5E2A),
+      color: theme.primary,
     );
   }
 }
