@@ -56,8 +56,8 @@ class AyahProvider with ChangeNotifier {
 
     _currentSurah = surahInfo?['surah'];
     _currentAyah = surahInfo?['ayah'];
-
-    ayah.audio = 'https://cdn.islamic.network/quran/audio/128/ar.alafasy/$ayahNumber.mp3';
+//https://the-quran-project.github.io/Quran-Audio/Data/4/33_33.mp3
+    //ayah.audio = 'https://cdn.islamic.network/quran/audio/128/ar.alafasy/$ayahNumber.mp3';
     ayah.surahNameArabic = current.name;
     ayah.surahNameEnglish = current.englishName;
     ayah.surahNumber = _currentSurah ?? '';
@@ -152,7 +152,6 @@ class AyahProvider with ChangeNotifier {
     final verseKey = '$surah:$ayah';
     final url = Uri.parse(
         'https://api.qurancdn.com/api/v4/tafsirs/$tafsirResourceId/by_ayah/$verseKey?locale=$locale&words=$includeWords');
-
     final res = await http.get(url)
     .timeout(const Duration(seconds: 10));
     if (res.statusCode == 200) {
@@ -187,8 +186,6 @@ class AyahProvider with ChangeNotifier {
       var current = await surahReference(int.parse(surah));
       final ayahNumber = getGlobalAyahNumber(int.parse(surah), int.parse(ayahNum));
 
-      final audio = 'https://cdn.islamic.network/quran/audio/128/ar.alafasy/$ayahNumber.mp3';
-
       try {
         final tafsirData = await fetchTafsirFor(
           surah: surah,
@@ -205,9 +202,13 @@ class AyahProvider with ChangeNotifier {
           surahNumber: surah,
           ayahNumber: ayahNum,
           tafsir: tafsirData.text ?? '',
-          audio: audio,
+          audio: '',
           wordsToLearn: tafsirData.getWordsDic(verse),
         );
+        if (searchedAyah!.translation.isEmpty || searchedAyah!.transliteration.isEmpty) {
+          print('verse');
+          print(verse);
+        }
         if (searchedAyah != null) {
           saveToArchive(searchedAyah!);
         }

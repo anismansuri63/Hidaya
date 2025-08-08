@@ -80,6 +80,8 @@ class _AyahListScreenState extends State<AyahListScreen> {
   }
 
   void playAudio(String url, int index, double speed) async {
+    print('url');
+    print(url);
     audioPlayer?.dispose();
     final player = AudioPlayer();
     await player.setUrl(url);
@@ -139,7 +141,7 @@ class _AyahListScreenState extends State<AyahListScreen> {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (_) => AyahDetailView(ayah: ayah),
+                  builder: (_) => AyahDetailView(ayah: ayah, theme: theme,),
                 ),
               );
             },
@@ -208,8 +210,9 @@ class _AyahListScreenState extends State<AyahListScreen> {
                         setState(() {
                           currentlyPlayingIndex = null;
                         });
-                      } else if (ayah.audio.isNotEmpty) {
-                        playAudio(ayah.audio, index, speed);
+                      } else {
+                        var audio = await ayah.audioRecite();
+                        playAudio(audio, index, speed);
                       }
                     },
                   ),

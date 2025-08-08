@@ -11,13 +11,13 @@ class AppColors {
       Provider.of<ThemeProvider>(context, listen: true).theme;
 
 
-  static AppTheme get current {
-    final context = NavigationService.navigatorKey.currentContext;
-    if (context == null) {
-      throw Exception('No context available!');
-    }
-    return of(context);
-  }
+  // static AppTheme get current {
+  //   final context = NavigationService.navigatorKey.currentContext;
+  //   if (context == null) {
+  //     throw Exception('No context available!');
+  //   }
+  //   return of(context);
+  // }
 
   //Primary Colors
   // static const Color primary = Color(0xFF0A5E2A);

@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:com_quranicayah/providers/ayah_provider.dart';
 import 'package:com_quranicayah/providers/font_provider.dart';
+import 'package:com_quranicayah/screens/recitations_screen.dart';
 import 'package:com_quranicayah/screens/search_ayah.dart';
 import 'package:com_quranicayah/screens/surah_list_screen.dart';
 import 'package:com_quranicayah/screens/tasbih_counter_screen.dart';
@@ -95,6 +96,15 @@ class _MainScreenState extends State<MainScreen> {
         );
 
         break;
+      case 4:
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => const RecitationsScreen()),
+        ).then((_) {
+          // Trigger UI rebuild
+          setState(() {});
+        });
+        break;
       case 5:
         Navigator.push(
           context,
@@ -188,7 +198,11 @@ class _MainScreenState extends State<MainScreen> {
                       GenerateButton(onPressed: () {
                         _generateRandomAyah(viewModel);
                       }),
-                      AyahWidget(ayah: viewModel.ayah, font: fontProvider.fontFamily),
+                      AyahWidget(
+                        key: ValueKey('${viewModel.ayah.surahNumber}:${viewModel.ayah.ayahNumber}'),
+                        ayah: viewModel.ayah,
+                        font: fontProvider.fontFamily,
+                      ),
                     ],
                   ),
                 ),
@@ -288,6 +302,13 @@ class _AyahSectionState extends State<AyahSection> {
     super.initState();
     _loadBookmarks();
   }
+  @override
+  void didUpdateWidget(covariant AyahSection oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (!_isSameAyah(oldWidget.ayah, widget.ayah)) {
+      _loadBookmarks(); // reload only if the ayah changed
+    }
+  }
 
   Future<void> _loadBookmarks() async {
     final prefs = await SharedPreferences.getInstance();
@@ -299,7 +320,6 @@ class _AyahSectionState extends State<AyahSection> {
     }).toList();
 
     final isBookmarked = loadedBookmarks.any((ayah) => _isSameAyah(ayah, widget.ayah));
-
     setState(() {
       _bookmarks = loadedBookmarks;
       _isBookmarked = isBookmarked;
@@ -361,7 +381,19 @@ class _AyahSectionState extends State<AyahSection> {
                     icon: Icon(Icons.share, color: theme.primary),
                     onPressed: () => _shareAyah(widget.ayah),
                   ),
-                  AudioPlayButton(audioUrl: widget.ayah.audio),
+                  FutureBuilder<String>(
+                    future: widget.ayah.audioRecite(),
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return CircularProgressIndicator(); // or a placeholder widget
+                      } else if (snapshot.hasError) {
+                        return Text('Error loading audio');
+                      } else {
+                        return AudioPlayButton(audioUrl: snapshot.data!);
+                      }
+                    },
+                  )
+                  //AudioPlayButton(audioUrl: widget.ayah.audioRecite()),
                 ],
               ),
 

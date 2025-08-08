@@ -22,7 +22,7 @@ class QuranSplashScreen extends StatelessWidget {
             // Islamic pattern background
             Positioned.fill(
               child: Opacity(
-                opacity: 0.1,
+                opacity: 0.7,
                 child: CustomPaint(painter: _IslamicPatternPainter()),
               ),
             ),

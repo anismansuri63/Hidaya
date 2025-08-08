@@ -52,7 +52,7 @@ class AppDrawer extends StatelessWidget {
             _buildListTile(context, Icons.book, 'Surahs', 1),
             _buildListTile(context, Icons.bookmark, 'Bookmarks', 2),
             _buildListTile(context, Icons.history, 'History', 3),
-            _buildListTile(context, Icons.volume_up, 'Recitations(Coming Soon)', 4),
+            _buildListTile(context, Icons.volume_up, 'Recitations', 4),
             _buildListTile(context, Icons.abc, 'Tasbih', 5),
             const Divider(),
             _buildListTile(context, Icons.settings, 'Settings', 8),

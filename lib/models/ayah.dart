@@ -1,6 +1,8 @@
 
 import 'dart:convert';
 
+import 'package:shared_preferences/shared_preferences.dart';
+
 class AyahDetail {
   String surahNameArabic;
   String surahNameEnglish;
@@ -14,6 +16,13 @@ class AyahDetail {
   Map<String, String> wordsToLearn;
   String numberDetail() {
     return '$surahNumber:$ayahNumber';
+  }
+  Future<String> audioRecite() async {
+    print('audioRecite');
+    final prefs = await SharedPreferences.getInstance();
+    var id = prefs.getString('selected_reciter') ?? '1';
+    print(id);
+    return 'https://the-quran-project.github.io/Quran-Audio/Data/$id/${surahNumber}_$ayahNumber.mp3';
   }
 
   AyahDetail({

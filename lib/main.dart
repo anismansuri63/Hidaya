@@ -1,6 +1,8 @@
 import 'package:com_quranicayah/providers/font_provider.dart';
+import 'package:com_quranicayah/providers/recitation_provider.dart';
 import 'package:com_quranicayah/providers/settings_provider.dart';
 import 'package:com_quranicayah/providers/theme_provider.dart';
+import 'package:com_quranicayah/screens/recitations_screen.dart';
 import 'package:com_quranicayah/screens/splash_screen.dart';
 import 'package:com_quranicayah/service/navigation_service.dart';
 import 'package:flutter/material.dart';
@@ -36,6 +38,8 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => AyahProvider()),
         ChangeNotifierProvider(create: (_) => SettingsProvider()),
         ChangeNotifierProvider(create: (_) => ThemeProvider()), // Add this
+        ChangeNotifierProvider(create: (_) => RecitationProvider()), // Add this
+
 
       ],
       child: MaterialApp(

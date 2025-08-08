@@ -58,9 +58,14 @@ flutter:
   uses-material-design: true
   assets:
     - assets/quran.json
-    - assets/database/qurandb.db
+    - assets/database/quranFull.sqlite
     - assets/database/quran.sqlite
     - assets/images/islamic_pattern.png
+    - assets/images/people/Mishary.png
+    - assets/images/people/Yasser.png
+    - assets/images/people/AbuBakrAlShatri.png
+    - assets/images/people/HaniArRifai.png
+    - assets/images/people/NasserAlQatami.png
 
   fonts:
     - family: Kitab

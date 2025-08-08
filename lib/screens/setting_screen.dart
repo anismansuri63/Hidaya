@@ -36,7 +36,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
           const Text('App Settings', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
           SwitchListTile(
             activeColor: theme.primary,
-            title: const Text('Dark Mode'),
+            title: const Text('Dark Mode (Coming Soon)'),
             value: isDarkMode,
             onChanged: (value) {
               setState(() {
@@ -79,7 +79,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
             );
           },
         ),
-
 
           const SizedBox(height: 24),
 
