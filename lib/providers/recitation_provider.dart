@@ -24,6 +24,18 @@ class RecitationProvider with ChangeNotifier {
         sampleUrl: 'https://the-quran-project.github.io/Quran-Audio/Data/1/1_2.mp3',
       ),
       Recitation(
+        id: '6',
+        name: 'Saud Al-Shuraim',
+        imagePath: 'assets/images/people/SaoodAsh-Shuraim.png',
+        sampleUrl: 'https://everyayah.com/data/Saood_ash-Shuraym_128kbps/001002.mp3',
+      ),
+      Recitation(
+        id: '4',
+        name: 'Yasser Al-Dosari',
+        imagePath: 'assets/images/people/Yasser.png',
+        sampleUrl: 'https://the-quran-project.github.io/Quran-Audio/Data/4/1_2.mp3',
+      ),
+      Recitation(
         id: '2',
         name: 'AbuBakr Al Shatri',
         imagePath: 'assets/images/people/AbuBakrAlShatri.png',
@@ -35,12 +47,7 @@ class RecitationProvider with ChangeNotifier {
         imagePath: 'assets/images/people/NasserAlQatami.png',
         sampleUrl: 'https://the-quran-project.github.io/Quran-Audio/Data/3/1_2.mp3',
       ),
-      Recitation(
-        id: '4',
-        name: 'Yasser Al-Dosari',
-        imagePath: 'assets/images/people/Yasser.png',
-        sampleUrl: 'https://the-quran-project.github.io/Quran-Audio/Data/4/1_2.mp3',
-      ),
+
       Recitation(
         id: '5',
         name: 'Hani Ar Rifai',

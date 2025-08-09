@@ -1,18 +1,18 @@
-import 'package:com_quranicayah/theme/app_colors.dart';
+import 'package:com_quranicayah/theme/app_theme.dart';
 import 'package:com_quranicayah/widget/tappable_ayah.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_tts/flutter_tts.dart';
 
 
 class WordByWordScrollGrid extends StatefulWidget {
   final Map<String, String> wordPairs;
   final String font;
-
+  final AppTheme theme;
 
   const WordByWordScrollGrid({
     super.key,
     required this.wordPairs,
     required this.font,
+    required this.theme,
   });
 
   @override
@@ -20,10 +20,9 @@ class WordByWordScrollGrid extends StatefulWidget {
 }
 
 class _WordByWordScrollGridState extends State<WordByWordScrollGrid> {
-  final FlutterTts flutterTts = FlutterTts();
   @override
   Widget build(BuildContext context) {
-    final theme = AppColors.of(context);
+    final theme = widget.theme;
     return Directionality(
       textDirection: TextDirection.rtl, // RTL for Arabic + scroll
       child: SingleChildScrollView(
@@ -73,13 +72,6 @@ class _WordByWordScrollGridState extends State<WordByWordScrollGrid> {
         ),
       ),
     );
-  }
-  Future<void> speakArabic(String word) async {
-    final FlutterTts flutterTts = FlutterTts();
-
-    await flutterTts.setLanguage("ar"); // Arabic language
-       // optional
-    await flutterTts.speak(word);
   }
 
 }

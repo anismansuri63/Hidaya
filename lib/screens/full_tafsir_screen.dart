@@ -50,6 +50,11 @@ class _FullTafsirViewState extends State<FullTafsirView> {
         iconTheme: IconThemeData(color: theme.textWhite),
         title: Text(widget.detail.surahNameArabic, style: TextStyle(color: theme.textWhite),),
         backgroundColor: theme.primary,
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(
+            bottom: Radius.circular(16),
+          ),
+        ),
       ),
       body: Column(
         children: [

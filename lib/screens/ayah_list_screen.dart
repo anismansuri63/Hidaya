@@ -124,6 +124,11 @@ class _AyahListScreenState extends State<AyahListScreen> {
             ),
         ],
         title: Text(widget.title, style: TextStyle(color: theme.textWhite)),
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(
+            bottom: Radius.circular(16),
+          ),
+        ),
       ),
       body: _isLoading
           ? const Center(child: CircularProgressIndicator())

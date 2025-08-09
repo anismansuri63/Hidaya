@@ -10,6 +10,8 @@ import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:internet_connection_checker/internet_connection_checker.dart';
 import 'package:flutter/services.dart' show rootBundle;
 
+import '../service/flas_card_service.dart';
+
 
 
 class AyahProvider with ChangeNotifier {
@@ -79,6 +81,7 @@ class AyahProvider with ChangeNotifier {
       ayah.tafsir = tafsirData.text ?? '';
       ayah.wordsToLearn = tafsirData.getWordsDic(verse);
       saveToArchive(ayah);
+      saveWordsForFlashCard(ayah.wordsToLearn);
     } catch (e) {
       debugPrint('Tafsir fetch failed: $e');
     }
@@ -86,6 +89,18 @@ class AyahProvider with ChangeNotifier {
     notifyListeners();
     isLoading = false;
   }
+  void saveWordsForFlashCard(Map<String, String> words) async {
+    // Create a new map with the same entries
+    var wordsToSave = Map<String, String>.from(words);
+
+    // Remove last entry from the copy
+    if (wordsToSave.isNotEmpty) {
+      wordsToSave.remove(wordsToSave.keys.last);
+    }
+
+    await FlashCardService.saveWordsForFlashCard(wordsToSave);
+  }
+
 
   void saveToArchive(AyahDetail detail) async {
 
@@ -212,6 +227,7 @@ class AyahProvider with ChangeNotifier {
         if (searchedAyah != null) {
           saveToArchive(searchedAyah!);
         }
+        saveWordsForFlashCard(searchedAyah?.wordsToLearn ?? {});
 
       } catch (e) {
         debugPrint('Tafsir fetch failed: $e');

@@ -14,17 +14,14 @@ dependencies:
   provider: ^6.1.1
   shared_preferences: ^2.2.2
   just_audio: ^0.9.36
-  audio_session: ^0.1.16
   http: ^1.2.1
   flutter_html: ^3.0.0
   connectivity_plus: ^6.0.3
   internet_connection_checker: ^1.0.0+1
   share_plus: ^7.0.1
   sqflite: ^2.3.2
-  path: ^1.9.0
-  path_provider: ^2.1.2
-  flutter_tts: ^3.8.5
   flutter_animate: ^4.1.1+1
+
 
 dev_dependencies:
   flutter_native_splash: ^2.3.10
@@ -66,6 +63,7 @@ flutter:
     - assets/images/people/AbuBakrAlShatri.png
     - assets/images/people/HaniArRifai.png
     - assets/images/people/NasserAlQatami.png
+    - assets/images/people/SaoodAsh-Shuraim.png
 
   fonts:
     - family: Kitab

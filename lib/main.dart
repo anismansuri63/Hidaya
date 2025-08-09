@@ -6,6 +6,7 @@ import 'package:com_quranicayah/screens/recitations_screen.dart';
 import 'package:com_quranicayah/screens/splash_screen.dart';
 import 'package:com_quranicayah/service/navigation_service.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'providers/ayah_provider.dart';
 import 'screens/ayah_screen.dart';
@@ -15,6 +16,10 @@ void main() async {
 
   final fontProvider = FontProvider();
   await fontProvider.loadFont();
+  await SystemChrome.setPreferredOrientations([
+    DeviceOrientation.portraitUp,
+    DeviceOrientation.portraitDown,
+  ]);
 
   // SystemChrome.setSystemUIOverlayStyle(
   //   const SystemUiOverlayStyle(

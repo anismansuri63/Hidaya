@@ -1,10 +1,12 @@
 import 'dart:convert';
 import 'package:com_quranicayah/providers/ayah_provider.dart';
 import 'package:com_quranicayah/providers/font_provider.dart';
+import 'package:com_quranicayah/screens/flash_cards/difficulty_screen.dart';
 import 'package:com_quranicayah/screens/recitations_screen.dart';
 import 'package:com_quranicayah/screens/search_ayah.dart';
 import 'package:com_quranicayah/screens/surah_list_screen.dart';
 import 'package:com_quranicayah/screens/tasbih_counter_screen.dart';
+import 'package:com_quranicayah/theme/app_theme.dart';
 import 'package:com_quranicayah/widget/audio_button.dart';
 import 'package:com_quranicayah/widget/ayah_widget.dart';
 import 'package:flutter/material.dart';
@@ -49,9 +51,6 @@ class _MainScreenState extends State<MainScreen> {
     setState(() {
       _selectedIndex = index;
     });
-    print('_selectedIndex');
-    print(_selectedIndex);
-
 
     // // Now navigate based on index
     switch (index) {
@@ -62,12 +61,6 @@ class _MainScreenState extends State<MainScreen> {
         Navigator.push(
           context,
           MaterialPageRoute(builder: (context) => SurahListScreen()),
-        );
-        break;
-      case 8:
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => const SettingsScreen()),
         );
         break;
 
@@ -111,6 +104,12 @@ class _MainScreenState extends State<MainScreen> {
           MaterialPageRoute(builder: (context) =>  TasbihScreen()),
         );
         break;
+      case 6:
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => DifficultyScreen()),
+        );
+        break;
 
       case 7:
         Navigator.push(
@@ -118,6 +117,13 @@ class _MainScreenState extends State<MainScreen> {
           MaterialPageRoute(builder: (context) =>  SearchAyahScreen()),
         );
         break;
+      case 8:
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => const SettingsScreen()),
+        );
+        break;
+
       default:
         break;
     }
@@ -201,6 +207,7 @@ class _MainScreenState extends State<MainScreen> {
                       AyahWidget(
                         key: ValueKey('${viewModel.ayah.surahNumber}:${viewModel.ayah.ayahNumber}'),
                         ayah: viewModel.ayah,
+                        theme: theme,
                         font: fontProvider.fontFamily,
                       ),
                     ],
@@ -286,8 +293,9 @@ class HeaderSection extends StatelessWidget {
 class AyahSection extends StatefulWidget {
   final AyahDetail ayah;
   final String font;
+  final AppTheme theme;
 
-  const AyahSection({super.key, required this.ayah, required this.font});
+  const AyahSection({super.key, required this.ayah, required this.font, required this.theme});
 
   @override
   State<AyahSection> createState() => _AyahSectionState();
@@ -351,7 +359,7 @@ class _AyahSectionState extends State<AyahSection> {
 
   @override
   Widget build(BuildContext context) {
-    final theme = AppColors.of(context);
+    final theme = widget.theme;
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 16),
       padding: const EdgeInsets.all(10),

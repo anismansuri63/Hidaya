@@ -29,6 +29,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
         ),
         title: Text("Settings",
           style: TextStyle(color: theme.textWhite),),
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(
+            bottom: Radius.circular(16),
+          ),
+        ),
       ),
       body: ListView(
         padding: const EdgeInsets.all(16),

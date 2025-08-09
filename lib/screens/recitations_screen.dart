@@ -30,6 +30,11 @@ class RecitationsScreen extends StatelessWidget {
             backgroundColor: theme.primary,
             iconTheme: IconThemeData(color: theme.textWhite),
             title: Text("Select Reciter", style: TextStyle(color: theme.textWhite)),
+            shape: const RoundedRectangleBorder(
+              borderRadius: BorderRadius.vertical(
+                bottom: Radius.circular(16),
+              ),
+            ),
           ),
           body: Container(
             decoration: BoxDecoration(

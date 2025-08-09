@@ -18,11 +18,18 @@ class AyahDetail {
     return '$surahNumber:$ayahNumber';
   }
   Future<String> audioRecite() async {
-    print('audioRecite');
     final prefs = await SharedPreferences.getInstance();
     var id = prefs.getString('selected_reciter') ?? '1';
-    print(id);
-    return 'https://the-quran-project.github.io/Quran-Audio/Data/$id/${surahNumber}_$ayahNumber.mp3';
+    if (['1', '2', '3', '4', '5'].contains(id)) {
+      return 'https://the-quran-project.github.io/Quran-Audio/Data/$id/${surahNumber}_$ayahNumber.mp3';
+    }
+    if (id == '6') {
+      String paddedSurah = surahNumber.padLeft(3, '0');
+      String paddedAyah = ayahNumber.padLeft(3, '0');
+      String url = "https://everyayah.com/data/Saood_ash-Shuraym_128kbps/$paddedSurah$paddedAyah.mp3";
+      return url;
+    }
+    return 'https://the-quran-project.github.io/Quran-Audio/Data/1/${surahNumber}_$ayahNumber.mp3';
   }
 
   AyahDetail({

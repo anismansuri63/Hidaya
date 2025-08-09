@@ -11,7 +11,7 @@ class TappableAyahWord extends StatefulWidget {
   const TappableAyahWord({
     Key? key,
     required this.child,
-    required this.onTapConfirmed,
+    this.onTapConfirmed,
   }) : super(key: key);
 
   @override
@@ -23,7 +23,6 @@ class _TappableAyahWordState extends State<TappableAyahWord> {
 
   Future<void> _handleTap() async {
     if (!_wuduManager.hasConfirmedWudu) {
-      final theme = AppColors.of(context);
       final result = await showDialog<bool>(
         context: context,
         builder: (context) => AlertDialog(
@@ -33,11 +32,11 @@ class _TappableAyahWordState extends State<TappableAyahWord> {
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(context, false),
-              child: Text("No", style: TextStyle(color: theme.primary),),
+              child: Text("No", style: TextStyle(color: Colors.black),),
             ),
             TextButton(
               onPressed: () => Navigator.pop(context, true),
-              child: Text("Yes", style: TextStyle(color: theme.primary),),
+              child: Text("Yes", style: TextStyle(color: Colors.black),),
             ),
           ],
         ),

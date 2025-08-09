@@ -36,6 +36,7 @@ class _AyahDetailViewState extends State<AyahDetailView> {
           child: AyahWidget(
             ayah: widget.ayah,
             font: font.fontFamily,
+            theme: theme,
           ),
         ),
       ),

@@ -84,6 +84,11 @@ class _SurahListScreenState extends State<SurahListScreen> {
         ),
         title: Text("Surahs",
           style: TextStyle(color: theme.textWhite),),
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(
+            bottom: Radius.circular(16),
+          ),
+        ),
       ),
 
       body: SafeArea(

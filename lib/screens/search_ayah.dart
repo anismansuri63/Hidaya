@@ -97,6 +97,11 @@ class _SearchAyahScreenState extends State<SearchAyahScreen> {
           ),
           title: Text("Search Ayah",
           style: TextStyle(color: theme.textWhite),),
+          shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.vertical(
+              bottom: Radius.circular(16),
+            ),
+          ),
         ),
         body: Column(
           children: [
@@ -208,7 +213,7 @@ class _SearchAyahScreenState extends State<SearchAyahScreen> {
               Expanded(
                 child: ListView(
                   children: [
-                    AyahWidget(ayah: ayah, font: provider.selectedFont, widgetValue: previousNext(context)),
+                    AyahWidget(ayah: ayah, font: provider.selectedFont, theme: theme, widgetValue: previousNext(context)),
                   ],
                 ),
               ),
