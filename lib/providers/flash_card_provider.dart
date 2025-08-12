@@ -129,7 +129,7 @@ class FlashCardProvider with ChangeNotifier {
     _showResult = true;
     notifyListeners();
 
-    Future.delayed(const Duration(milliseconds: 600), () async {
+    Future.delayed(const Duration(milliseconds: 1500), () async {
       if (_currentIndex < _cards.length - 1) {
         _currentIndex++;
         _showResult = false;
