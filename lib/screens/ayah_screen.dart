@@ -9,6 +9,7 @@ import 'package:com_quranicayah/screens/tasbih_counter_screen.dart';
 import 'package:com_quranicayah/theme/app_theme.dart';
 import 'package:com_quranicayah/widget/audio_button.dart';
 import 'package:com_quranicayah/widget/ayah_widget.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:share_plus/share_plus.dart';
@@ -37,11 +38,14 @@ class _MainScreenState extends State<MainScreen> {
   int _selectedIndex = 0;
 
   void _generateRandomAyah(AyahProvider viewModel) async {
-    final isConnected = await viewModel.hasInternetConnection();
-    if (!isConnected) {
-      showNoInternetDialog(context);
-      return;
+    if (!kIsWeb) {
+      final isConnected = await viewModel.hasInternetConnection();
+      if (!isConnected) {
+        showNoInternetDialog(context);
+        return;
+      }
     }
+
     await viewModel.fetchRandomAyah();
     await viewModel.fetchTafsir();
 
@@ -135,11 +139,14 @@ class _MainScreenState extends State<MainScreen> {
       hasLoaded = true;
       final viewModel = Provider.of<AyahProvider>(context, listen: false);
       Future(() async {
-        final isConnected = await viewModel.hasInternetConnection();
-        if (!isConnected) {
-          showNoInternetDialog(context);
-          return;
+        if (!kIsWeb) {
+          final isConnected = await viewModel.hasInternetConnection();
+          if (!isConnected) {
+            showNoInternetDialog(context);
+            return;
+          }
         }
+
         await viewModel.fetchRandomAyah();
         await viewModel.fetchTafsir();
       });
