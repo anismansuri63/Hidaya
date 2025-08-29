@@ -164,6 +164,7 @@ class AyahProvider with ChangeNotifier {
     String locale = 'en',
     bool includeWords = true,
   }) async {
+    //https://api.alquran.cloud/v1/ayah/2:285/editions/ar,en.transliteration,en.asad,en.tafsir
     final verseKey = '$surah:$ayah';
     final url = Uri.parse(
         'https://api.qurancdn.com/api/v4/tafsirs/$tafsirResourceId/by_ayah/$verseKey?locale=$locale&words=$includeWords');
