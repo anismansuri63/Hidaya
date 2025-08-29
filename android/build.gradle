@@ -13,6 +13,16 @@ allprojects {
         google()
         mavenCentral()
     }
+
+    // 🔽 Force bcprov-jdk18on version to avoid Java 21-compiled version 1.80
+    configurations.all {
+        resolutionStrategy.eachDependency { DependencyResolveDetails details ->
+            if (details.requested.group == 'org.bouncycastle' &&
+                    details.requested.name == 'bcprov-jdk18on') {
+                details.useVersion '1.77'
+            }
+        }
+    }
 }
 
 rootProject.buildDir = "../build"
