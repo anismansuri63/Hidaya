@@ -9,7 +9,6 @@ import '../service/database_service.dart';
 import '../theme/app_colors.dart';
 import '../theme/app_theme.dart';
 
-
 class SurahFullScreen extends StatefulWidget {
   final SurahReference surahRef;
 
@@ -22,22 +21,35 @@ class SurahFullScreen extends StatefulWidget {
   State<SurahFullScreen> createState() => _SurahFullScreenState();
 }
 
+
 class _SurahFullScreenState extends State<SurahFullScreen> {
-  SurahDb? surah; // Make it nullable
+  SurahDb? surah;
   QuranDetail? detail;
   bool isLoading = true;
+
+  final ScrollController _scrollController = ScrollController();
+  bool isAutoScrolling = false;
+  double scrollSpeed = 30; // pixels per second
 
   @override
   void initState() {
     super.initState();
     fetchSurahById(widget.surahRef.number);
     loadQuranDetail();
-
   }
-  loadQuranDetail() async {
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  Future<void> loadQuranDetail() async {
     final jsonString = await rootBundle.loadString('assets/quran.json');
     final jsonMap = jsonDecode(jsonString);
-    detail = QuranDetail.fromJson(jsonMap);
+    setState(() {
+      detail = QuranDetail.fromJson(jsonMap);
+    });
   }
 
   void fetchSurahById(int id) async {
@@ -55,10 +67,45 @@ class _SurahFullScreenState extends State<SurahFullScreen> {
     }
   }
 
+  void startAutoScroll() {
+    isAutoScrolling = true;
+    _autoScroll();
+  }
+
+  void stopAutoScroll() {
+    isAutoScrolling = false;
+  }
+
+  Future<void> _autoScroll() async {
+    while (isAutoScrolling && _scrollController.hasClients) {
+      await Future.delayed(const Duration(milliseconds: 100));
+
+      final maxScroll = _scrollController.position.maxScrollExtent;
+      final currentScroll = _scrollController.offset;
+
+      // If we've reached (or almost reached) the bottom, stop auto-scrolling
+      if (currentScroll >= maxScroll - 10) {
+        setState(() {
+          isAutoScrolling = false;
+        });
+        break;
+      }
+
+      // Otherwise, scroll by a small increment
+      _scrollController.animateTo(
+        currentScroll + scrollSpeed * 0.1,
+        duration: const Duration(milliseconds: 100),
+        curve: Curves.linear,
+      );
+    }
+  }
+
+
   @override
   Widget build(BuildContext context) {
     final theme = AppColors.of(context);
     final font = Provider.of<FontProvider>(context);
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: theme.primary,
@@ -70,36 +117,107 @@ class _SurahFullScreenState extends State<SurahFullScreen> {
           ),
         ),
       ),
-        body: isLoading
-            ? Center(child: CircularProgressIndicator())
-            : surah == null
-            ? Center(child: Text("Surah not found"))
-            : SingleChildScrollView(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              // Optional Bismillah Header (skip for Surah Tawbah)
-              if (widget.surahRef.number != 9)
-                Padding(
-                  padding: const EdgeInsets.only(bottom: 24),
-                  child: Text(
-                    '﷽',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontFamily: font.fontFamily,
-                      fontSize: 36,
-                      color: theme.primary,
+      body: isLoading || detail == null
+          ? const Center(child: CircularProgressIndicator())
+          : Column(
+        children: [
+          // Font size slider
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+            child: Column(
+              children: [
+                Row(
+                  children: [
+                    const Text("Font Size"),
+                    Expanded(
+                      child: Slider(
+                        activeColor: theme.secondary,
+                        value: font.fontSize,
+                        min: 20,
+                        max: 40,
+                        divisions: 8,
+                        label: font.fontSize.round().toString(),
+                        onChanged: (value) {
+                          font.setFontSize(value);
+                        },
+                      ),
                     ),
-                  ),
+                    Text(font.fontSize.toInt().toString()),
+                  ],
                 ),
-
-              // Verse-by-verse view
-              ..._buildVerses(surah!.content, font, theme),
-            ],
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Row(
+                      children: [
+                        const Text("Auto Scroll"),
+                        Switch(
+                          activeColor: theme.secondary,
+                          value: isAutoScrolling,
+                          onChanged: (value) {
+                            setState(() {
+                              isAutoScrolling = value;
+                            });
+                            if (value) {
+                              startAutoScroll();
+                            } else {
+                              stopAutoScroll();
+                            }
+                          },
+                        ),
+                      ],
+                    ),
+                    Row(
+                      children: [
+                        const Text("Speed"),
+                        Slider(
+                          value: scrollSpeed,
+                          activeColor: theme.secondary,
+                          min: 10,
+                          max: 100,
+                          divisions: 9,
+                          label: scrollSpeed.toStringAsFixed(0),
+                          onChanged: (value) {
+                            setState(() {
+                              scrollSpeed = value;
+                            });
+                          },
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ],
+            ),
           ),
-        ),
-
+          const Divider(),
+          Expanded(
+            child: SingleChildScrollView(
+              controller: _scrollController,
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  if (widget.surahRef.number != 9)
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 24),
+                      child: Text(
+                        '﷽',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontFamily: font.fontFamily,
+                          fontSize: font.fontSize,
+                          color: theme.primary,
+                        ),
+                      ),
+                    ),
+                  ..._buildVerses(surah!.content, font, theme),
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 
@@ -113,9 +231,9 @@ class _SurahFullScreenState extends State<SurahFullScreen> {
       final verseNumber = match.group(2) ?? '';
       final surahNumber = widget.surahRef.number;
 
-      // Check if current verse is a sajdah
       final isSajdah = sajdas.any((sajda) =>
-      sajda.surah == surahNumber && sajda.ayah.toString() == verseNumber);
+      sajda.surah == surahNumber &&
+          sajda.ayah.toString() == verseNumber);
 
       return Padding(
         padding: const EdgeInsets.symmetric(vertical: 12),
@@ -128,11 +246,11 @@ class _SurahFullScreenState extends State<SurahFullScreen> {
               textAlign: TextAlign.right,
               style: TextStyle(
                 fontFamily: font.fontFamily,
-                fontSize: 30,
+                fontSize: font.fontSize,
                 height: 1.4,
               ),
             ),
-            const SizedBox(width: 12),
+            const SizedBox(height: 6),
             Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
@@ -142,10 +260,10 @@ class _SurahFullScreenState extends State<SurahFullScreen> {
                     style: TextStyle(
                       color: theme.primary,
                       fontFamily: font.fontFamily,
-                      fontSize: 25,
+                      fontSize: font.fontSize - 5,
                     ),
                   ),
-                SizedBox(width: 10,),
+                const SizedBox(width: 10),
                 Container(
                   width: 36,
                   height: 36,
@@ -169,6 +287,4 @@ class _SurahFullScreenState extends State<SurahFullScreen> {
       );
     }).toList();
   }
-
-
 }

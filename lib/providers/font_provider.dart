@@ -19,6 +19,19 @@ class FontProvider with ChangeNotifier {
   FontProvider() {
     loadFont();
   }
+  double _fontSize = 30;
+
+  double get fontSize => _fontSize;
+
+  void setFontSize(double size) {
+    _fontSize = size;
+    notifyListeners();
+  }
+
+  void setFontFamily(String family) {
+    _fontFamily = family;
+    notifyListeners();
+  }
 
   Future<void> loadFont() async {
     final prefs = await SharedPreferences.getInstance();
