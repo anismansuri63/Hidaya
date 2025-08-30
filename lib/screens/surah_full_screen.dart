@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
+import 'package:wakelock/wakelock.dart';
 import '../models/quran_detail.dart';
 import '../providers/font_provider.dart';
 import '../service/database_service.dart';
@@ -36,11 +37,13 @@ class _SurahFullScreenState extends State<SurahFullScreen> {
     super.initState();
     fetchSurahById(widget.surahRef.number);
     loadQuranDetail();
+    Wakelock.enable();
   }
 
   @override
   void dispose() {
     _scrollController.dispose();
+    Wakelock.disable();
     super.dispose();
   }
 
