@@ -1,26 +1,4 @@
-import 'dart:convert';
-import 'package:com_quranicayah/providers/ayah_provider.dart';
-import 'package:com_quranicayah/providers/font_provider.dart';
-import 'package:com_quranicayah/screens/flash_cards/difficulty_screen.dart';
-import 'package:com_quranicayah/screens/recitations_screen.dart';
-import 'package:com_quranicayah/screens/search_ayah.dart';
-import 'package:com_quranicayah/screens/surah_list_screen.dart';
-import 'package:com_quranicayah/screens/tasbih_counter_screen.dart';
-import 'package:com_quranicayah/theme/app_theme.dart';
-import 'package:com_quranicayah/widget/audio_button.dart';
-import 'package:com_quranicayah/widget/ayah_widget.dart';
-import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import 'package:share_plus/share_plus.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import '../models/ayah.dart';
-import '../widget/generate_button.dart';
-import 'app_drawer.dart';
-import 'ayah_list_screen.dart';
-import 'setting_screen.dart';
-import 'full_tafsir_screen.dart';
-import '../theme/app_colors.dart';
+import 'package:com_quranicayah/core/app_imports.dart';
 
 
 class MainScreen extends StatefulWidget {
@@ -127,7 +105,28 @@ class _MainScreenState extends State<MainScreen> {
           MaterialPageRoute(builder: (context) => const SettingsScreen()),
         );
         break;
+      case 9:
 
+        break;
+
+      case 10:
+
+        final theme = Provider.of<ThemeProvider>(context, listen: false).theme;
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => QazaStepperPage(
+              primaryColor: theme.primary,
+            ),
+          ),
+        );
+        break;
+      case 11:
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => PdfListScreen()),
+        );
+        break;
       default:
         break;
     }

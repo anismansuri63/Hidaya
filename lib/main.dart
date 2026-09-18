@@ -2,11 +2,14 @@ import 'package:com_quranicayah/providers/font_provider.dart';
 import 'package:com_quranicayah/providers/recitation_provider.dart';
 import 'package:com_quranicayah/providers/settings_provider.dart';
 import 'package:com_quranicayah/providers/theme_provider.dart';
+import 'package:com_quranicayah/screens/pdf_screen/pdf_model.dart';
 import 'package:com_quranicayah/screens/recitations_screen.dart';
 import 'package:com_quranicayah/screens/splash_screen.dart';
 import 'package:com_quranicayah/service/navigation_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:hive/hive.dart';
+import 'package:hive_flutter/adapters.dart';
 import 'package:provider/provider.dart';
 import 'providers/ayah_provider.dart';
 import 'screens/ayah_screen.dart';
@@ -16,11 +19,23 @@ void main() async {
 
   final fontProvider = FontProvider();
   await fontProvider.loadFont();
+  await Hive.initFlutter();
+  Hive.registerAdapter(PdfModelAdapter());
+  await Hive.openBox<PdfModel>('pdfBox');
+
   await SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
     DeviceOrientation.portraitDown,
   ]);
+  SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
 
+  SystemChrome.setSystemUIOverlayStyle(
+    const SystemUiOverlayStyle(
+      statusBarColor: Colors.transparent,
+      statusBarIconBrightness: Brightness.dark,
+      statusBarBrightness: Brightness.light,
+    ),
+  );
   // SystemChrome.setSystemUIOverlayStyle(
   //   const SystemUiOverlayStyle(
   //     statusBarColor: AppColors.primary,
